@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ارسلان کوچولو قهرمان خانه</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .book-container {
+            width: 800px;
+            height: 600px;
+            max-width: 90vw;
+            max-height: 85vh;
+            position: relative;
+            perspective: 1500px;
+        }
+        
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .book-spread {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .page-left, .page-right {
+            width: 50%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-left {
+            border-right: 2px solid #f0f0f0;
+            border-radius: 15px 0 0 15px;
+        }
+        
+        .page-right {
+            border-radius: 0 15px 15px 0;
+        }
+        
+        .page-content {
+            flex: 1;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-content {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1);
+            background-size: 300% 300%;
+            animation: gradient-move 4s ease infinite;
+            color: white;
+            position: relative;
+        }
+        
+        @keyframes gradient-move {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .cover-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1.5" fill="white" opacity="0.4"/><circle cx="80" cy="30" r="1" fill="white" opacity="0.3"/><circle cx="40" cy="70" r="1.5" fill="white" opacity="0.5"/><circle cx="70" cy="10" r="1" fill="white" opacity="0.3"/></svg>') repeat;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .cover-title {
+            font-size: 2rem;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 2;
+            position: relative;
+        }
+        
+        .cover-illustration {
+            width: 120px;
+            height: 120px;
+            margin: 15px auto;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 3px solid white;
+            z-index: 2;
+            position: relative;
+            animation: gentle-bounce 3s ease-in-out infinite;
+        }
+        
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .story-illustration {
+            width: 200px;
+            height: 150px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            border: 3px solid #FF69B4;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .story-illustration:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255,105,180,0.3);
+        }
+        
+        .story-text {
+            font-size: 0.95rem;
+            color: #2C3E50;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .story-text h3 {
+            color: #E91E63;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            animation: float 4s ease-in-out infinite;
+            font-size: 20px;
+        }
+        
+        .floating-element:nth-child(1) { animation-delay: 0s; }
+        .floating-element:nth-child(2) { animation-delay: 1.5s; }
+        .floating-element:nth-child(3) { animation-delay: 3s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(3deg); }
+            66% { transform: translateY(-5px) rotate(-2deg); }
+        }
+        
+        /* Scene backgrounds */
+        .morning-wake { background: linear-gradient(135deg, #FFE082, #FFC107); }
+        .breakfast-help { background: linear-gradient(135deg, #FFCDD2, #F8BBD9); }
+        .getting-dressed { background: linear-gradient(135deg, #C8E6C9, #A5D6A7); }
+        .table-setting { background: linear-gradient(135deg, #BBDEFB, #90CAF9); }
+        .eating-alone { background: linear-gradient(135deg, #D1C4E9, #CE93D8); }
+        .cleaning-table { background: linear-gradient(135deg, #FFCCBC, #FFAB91); }
+        .room-organizing { background: linear-gradient(135deg, #F0F4C3, #DCEDC8); }
+        .proud-family { background: linear-gradient(135deg, #FFE0B2, #FFCC02); }
+        
+        .page-number {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            z-index: 100;
+        }
+        
+        .page-left .page-number {
+            left: 20px;
+        }
+        
+        .page-right .page-number {
+            right: 20px;
+        }
+        
+        .navigation {
+            position: absolute;
+            bottom: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-button {
+            background: linear-gradient(45deg, #FF69B4, #4ECDC4);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 1rem;
+            font-family: 'Vazirmatn', Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .sparkle {
+            color: #FFD700;
+            animation: sparkle 2s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.7; transform: scale(1.2) rotate(180deg); }
+        }
+        
+        .heart-beat {
+            animation: heart-beat 1.8s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        @keyframes heart-beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        /* Hide spreads initially */
+        .book-spread {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        .book-spread.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .book-spread.prev {
+            transform: translateX(-100%);
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .book-container {
+                width: 100%;
+                height: 80vh;
+                max-height: 600px;
+            }
+            
+            .page-content {
+                padding: 20px 12px;
+            }
+            
+            .story-illustration {
+                width: 160px;
+                height: 120px;
+                font-size: 40px;
+            }
+            
+            .cover-illustration {
+                width: 100px;
+                height: 100px;
+                font-size: 50px;
+            }
+            
+            .cover-title {
+                font-size: 1.5rem;
+            }
+            
+            .story-text {
+                font-size: 0.85rem;
+            }
+            
+            .story-text h3 {
+                font-size: 1.1rem;
+            }
+            
+            .nav-button {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .navigation {
+                bottom: -60px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-left, .page-right {
+                width: 100%;
+            }
+            
+            .page-left {
+                display: none;
+            }
+            
+            .book-spread.mobile-left .page-left {
+                display: flex;
+            }
+            
+            .book-spread.mobile-left .page-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book" id="book">
+            
+            <!-- Spread 1: Cover -->
+            <div class="book-spread active" id="spread-1">
+                <div class="page-left">
+                    <div class="page-content cover-content">
+                        <div class="cover-illustration">🏠💪👦🏻</div>
+                        <p style="font-size: 1rem; z-index: 2; position: relative;">
+                            قهرمان کوچک خانه
+                        </p>
+                    </div>
+                </div>
+                <div class="page-right">
+                    <div class="page-content cover-content">
+                        <h1 class="cover-title">ارسلان کوچولو<br>قهرمان خانه</h1>
+                        <div class="cover-illustration">🦸‍♂️✨</div>
+                        <p style="font-size: 1rem; margin-top: 15px; z-index: 2; position: relative;">
+                            داستان پسربچه‌ای که خودش انجام می‌دهد<br>
+                            و به خانواده کمک می‌کند
+                        </p>
+                    </div>
+                </div>
+                <div class="page-number" style="position: absolute; bottom: 10px; right: 20px;">۱</div>
+            </div>
+
+            <!-- Spread 2: Morning Wake Up -->
+            <div class="book-spread" id="spread-2">
+                <div class="page-left">
+                    <div class="page-content morning-wake">
+                        <div class="page-number">۲</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #FFF9C4, #FFF176);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 20%; right: 15%;">☀️</div>
+                                <div class="floating-element" style="top: 60%; left: 20%;">🐦</div>
+                                <div class="floating-element" style="bottom: 25%; right: 25%;">⏰</div>
+                            </div>
+                            😴➡️😊👦🏻
+                        </div>
+                        <div class="story-text">
+                            <h3>بیدار شدن خودی</h3>
+                            <p>صبح زود، ارسلان بدون اینکه مامان هدیه یا بابا یزدان صدایش بزنند، خودش بیدار شد!</p>
+                            <p>«صبح بخیر آفتاب!» گفت و از رختخواب بلند شد.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-right">
+                    <div class="page-content getting-dressed">
+                        <div class="page-number">۳</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #E8F5E8, #C8E6C9);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 15%; right: 25%;">👕</div>
+                                <div class="floating-element" style="bottom: 20%; left: 15%;">👖</div>
+                                <div class="floating-element" style="top: 50%; left: 30%;">🧦</div>
+                            </div>
+                            👦🏻👕✨
+                        </div>
+                        <div class="story-text">
+                            <h3>لباس پوشیدن تنهایی</h3>
+                            <p>ارسلان رفت تو کمد و لباس‌هایش را انتخاب کرد. پیراهن آبی و شلوار قهوه‌ای!</p>
+                            <p>«من می‌تونم خودم لباس بپوشم!» با غرور گفت.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spread 3: Breakfast Help -->
+            <div class="book-spread" id="spread-3">
+                <div class="page-left">
+                    <div class="page-content breakfast-help">
+                        <div class="page-number">۴</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #FFCDD2, #F8BBD9);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 25%; right: 20%;">🥛</div>
+                                <div class="floating-element" style="bottom: 30%; left: 25%;">🍞</div>
+                                <div class="floating-element" style="top: 45%; left: 15%;">🧈</div>
+                            </div>
+                            👦🏻🍽️👩
+                        </div>
+                        <div class="story-text">
+                            <h3>کمک در آماده کردن صبحانه</h3>
+                            <p>ارسلان به آشپزخانه رفت و به مامان هدیه گفت: «مامان، بذار کمکت کنم!»</p>
+                            <p>او نان‌ها را روی میز چید و لیوان‌ها را آورد.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-right">
+                    <div class="page-content table-setting">
+                        <div class="page-number">۵</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #BBDEFB, #90CAF9);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 20%; right: 30%;">🍴</div>
+                                <div class="floating-element" style="bottom: 25%; left: 20%;">🥄</div>
+                                <div class="floating-element" style="top: 50%; right: 10%;">🍽️</div>
+                            </div>
+                            🍽️👦🏻📐
+                        </div>
+                        <div class="story-text">
+                            <h3>چیدن میز غذا</h3>
+                            <p>ارسلان یاد گرفته بود که چطور میز را درست بچیند. بشقاب‌ها، قاشق و چنگال‌ها همه جای درستشان!</p>
+                            <p>«ببین بابا! من میز رو مثل رستوران چیدم!»</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spread 4: Eating Independently -->
+            <div class="book-spread" id="spread-4">
+                <div class="page-left">
+                    <div class="page-content eating-alone">
+                        <div class="page-number">۶</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #D1C4E9, #CE93D8);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 15%; right: 20%;">😋</div>
+                                <div class="floating-element" style="bottom: 20%; left: 30%;">🥛</div>
+                                <div class="floating-element" style="top: 60%; right: 15%;">💪</div>
+                            </div>
+                            👦🏻🍴😊
+                        </div>
+                        <div class="story-text">
+                            <h3>خودم غذا می‌خورم</h3>
+                            <p>ارسلان خودش قاشق و چنگالش را گرفت و مثل آدم بزرگ‌ها غذا خورد.</p>
+                            <p>«دیگه نیازی ندارم کسی بهم غذا بده!» خوشحال گفت.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-right">
+                    <div class="page-content cleaning-table">
+                        <div class="page-number">۷</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #FFCCBC, #FFAB91);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 25%; right: 25%;">🧽</div>
+                                <div class="floating-element" style="bottom: 15%; left: 20%;">✨</div>
+                                <div class="floating-element" style="top: 45%; left: 10%;">💧</div>
+                            </div>
+                            🧽👦🏻🍽️
+                        </div>
+                        <div class="story-text">
+                            <h3>تمیز کردن میز</h3>
+                            <p>بعد از غذا، ارسلان بشقاب‌ها را جمع کرد و میز را با دستمال مرطوب تمیز کرد.</p>
+                            <p>«حالا میز مون مثل آینه می‌درخشه!»</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spread 5: Room Organization -->
+            <div class="book-spread" id="spread-5">
+                <div class="page-left">
+                    <div class="page-content room-organizing">
+                        <div class="page-number">۸</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #F0F4C3, #DCEDC8);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 20%; right: 20%;">🧸</div>
+                                <div class="floating-element" style="bottom: 25%; left: 25%;">📚</div>
+                                <div class="floating-element" style="top: 50%; right: 10%;">🚗</div>
+                            </div>
+                            📦👦🏻🧸
+                        </div>
+                        <div class="story-text">
+                            <h3>مرتب کردن اتاق</h3>
+                            <p>ارسلان به اتاقش رفت و اسباب‌بازی‌هایش را مرتب کرد. ماشین‌ها تو یک جعبه، عروسک‌ها تو جعبه دیگر!</p>
+                            <p>«هر چیز جای خودش رو داره!» فکر کرد.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-right">
+                    <div class="page-content proud-family">
+                        <div class="page-number">۹</div>
+                        <div class="story-illustration" style="background: linear-gradient(135deg, #FFE0B2, #FFCC02);">
+                            <div class="floating-elements">
+                                <div class="floating-element" style="top: 15%; right: 25%;">👏</div>
+                                <div class="floating-element" style="bottom: 20%; left: 15%;">❤️</div>
+                                <div class="floating-element" style="top: 50%; left: 30%;">⭐</div>
+                            </div>
+                            👨‍👩‍👦💕😊
+                        </div>
+                        <div class="story-text">
+                            <h3>خانواده مغرور</h3>
+                            <p>مامان هدیه و بابا یزدان ارسلان را دیدند و خیلی تعریفش کردند:</p>
+                            <p>«تو واقعاً قهرمان خانه‌مونی! ما خیلی بهت افتخار می‌کنیم!»</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spread 6: Final Message -->
+            <div class="book-spread" id="spread-6">
+                <div class="page-left">
+                    <div class="page-content" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1); color: white;">
+                        <div class="page-number" style="color: white;">۱۰</div>
+                        <div class="story-illustration" style="background: rgba(255,255,255,0.2); border-color: white;">
+                            <span class="heart-beat">⭐</span>👦🏻<span class="heart-beat">⭐</span>
+                        </div>
+                        <div class="story-text" style="color: white;">
+                            <h3>ارسلان یاد گرفت که:</h3>
+                            <p>خودم کار کردن خیلی خوبه!</p>
+                            <p>کمک کردن به خانواده لذت‌بخشه!</p>
+                            <p>هر کاری که با عشق بکنی، قشنگ می‌شه!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-right">
+                    <div class="page-content" style="background: linear-gradient(45deg, #4ECDC4, #45B7D1, #FF6B6B); color: white;">
+                        <div class="page-number" style="color: white;">۱۱</div>
+                        <div class="story-illustration" style="background: rgba(255,255,255,0.2); border-color: white;">
+                            <span class="sparkle">✨</span>🏠<span class="sparkle">✨</span>
+                        </div>
+                        <div class="story-text" style="color: white;">
+                            <h3 style="color: white;">🎉 پایان داستان 🎉</h3>
+                            <p>از اون روز به بعد، ارسلان هر روز کارهای جدید یاد گرفت و خانواده‌شون خوشحال‌تر شد!</p>
+                            <p style="margin-top: 15px;">
+                                <span class="sparkle">🌟</span> هر بچه‌ای می‌تونه قهرمان باشه! <span class="sparkle">🌟</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" onclick="previousSpread()">
+                ← قبلی
+            </button>
+            <button class="nav-button" id="nextBtn" onclick="nextSpread()">
+                بعدی →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSpread = 1;
+        const totalSpreads = 6;
+
+        function showSpread(spreadNum) {
+            // Hide all spreads
+            for(let i = 1; i <= totalSpreads; i++) {
+                const spread = document.getElementById(`spread-${i}`);
+                if(spread) {
+                    spread.classList.remove('active', 'prev');
+                    if(i < spreadNum) {
+                        spread.classList.add('prev');
+                    }
+                }
+            }
+            
+            // Show current spread
+            const currentSpreadElement = document.getElementById(`spread-${spreadNum}`);
+            if(currentSpreadElement) {
+                setTimeout(() => {
+                    currentSpreadElement.classList.add('active');
+                }, 50);
+            }
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = (spreadNum === 1);
+            document.getElementById('nextBtn').disabled = (spreadNum === totalSpreads);
+            
+            // Update button text for last spread
+            if(spreadNum === totalSpreads) {
+                document.getElementById('nextBtn').innerHTML = '🔄 از اول';
+                document.getElementById('nextBtn').disabled = false;
+            } else {
+                document.getElementById('nextBtn').innerHTML = 'بعدی →';
+            }
+        }
+
+        function nextSpread() {
+            if(currentSpread === totalSpreads) {
+                // Restart from beginning
+                currentSpread = 1;
+            } else {
+                currentSpread++;
+            }
+            showSpread(currentSpread);
+        }
+
+        function previousSpread() {
+            if(currentSpread > 1) {
+                currentSpread--;
+                showSpread(currentSpread);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if(e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSpread();
+            } else if(e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSpread();
+            }
+        });
+
+        // Touch/swipe navigation for mobile
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            startX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            endX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = startX - endX;
+            
+            if(Math.abs(diff) > swipeThreshold) {
+                if(diff > 0) {
+                    // Swipe left - next spread
+                    nextSpread();
+                } else {
+                    // Swipe right - previous spread
+                    previousSpread();
+                }
+            }
+        }
+
+        // Add click interactions to illustrations
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.story-illustration, .cover-illustration').forEach(illustration => {
+                illustration.addEventListener('click', function() {
+                    // Add celebration effect
+                    this.style.transform = 'scale(1.08) rotate(1deg)';
+                    
+                    // Create temporary sparkles
+                    for(let i = 0; i < 4; i++) {
+                        const sparkle = document.createElement('div');
+                        sparkle.innerHTML = ['✨', '⭐', '🌟', '💫'][Math.floor(Math.random() * 4)];
+                        sparkle.style.position = 'absolute';
+                        sparkle.style.fontSize = '18px';
+                        sparkle.style.pointerEvents = 'none';
+                        sparkle.style.left = Math.random() * 80 + 10 + '%';
+                        sparkle.style.top = Math.random() * 80 + 10 + '%';
+                        sparkle.style.zIndex = '1000';
+                        sparkle.style.animation = 'sparkle 1.2s ease-out forwards';
+                        sparkle.style.color = '#FFD700';
+                        
+                        this.appendChild(sparkle);
+                        
+                        setTimeout(() => sparkle.remove(), 1200);
+                    }
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1) rotate(0deg)';
+                    }, 400);
+                });
+            });
+            
+            // Initialize first spread
+            showSpread(1);
+            
+            // Randomize floating elements timing
+            document.querySelectorAll('.floating-element').forEach(element => {
+                element.style.animationDelay = Math.random() * 4 + 's';
+            });
+            
+            // Add smooth transitions for mobile
+            if(window.innerWidth <= 480) {
+                const spreads = document.querySelectorAll('.book-spread');
+                spreads.forEach(spread => {
+                    spread.addEventListener('click', function(e) {
+                        if(e.target.closest('.story-illustration') || e.target.closest('.cover-illustration')) {
+                            return; // Don't navigate if clicking on illustration
+                        }
+                        
+                        const rect = this.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const width = rect.width;
+                        
+                        if(x > width / 2) {
+                            nextSpread();
+                        } else {
+                            previousSpread();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
